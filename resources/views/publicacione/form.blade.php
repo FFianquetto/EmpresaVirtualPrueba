@@ -16,7 +16,7 @@
         <div class="form-group mb-2 mb20">
             <label for="imagen" class="form-label">Imagen </label>
             <input type="file" name="imagen" class="form-control @error('imagen') is-invalid @enderror" id="imagen" accept="image/*">
-            <small class="form-text text-muted">Imagen: JPEG, PNG, JPG - Max 2MB</small>
+            <small class="form-text text-muted">Imagen: JPEG, PNG, JPG - Max 5MB</small>
             {!! $errors->first('imagen', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
             
             @if(isset($publicacione) && $publicacione->imagen)
@@ -30,7 +30,7 @@
         <div class="form-group mb-2 mb20">
             <label for="audio" class="form-label">Audio</label>
             <input type="file" name="audio" class="form-control @error('audio') is-invalid @enderror" id="audio" accept="audio/*">
-            <small class="form-text text-muted">Audio: MP3, WAV, OGG - Max 10MB</small>
+            <small class="form-text text-muted">Audio: MP3, WAV, OGG - Max 20MB</small>
             {!! $errors->first('audio', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
             
             @if(isset($publicacione) && $publicacione->audio)
