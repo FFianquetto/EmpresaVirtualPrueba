@@ -5,7 +5,7 @@ use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\PublicacioneController;
 use App\Http\Controllers\AutenticacionController;
 
-//FFianquetto V.8
+//FFianquetto V.14
 
 Route::get('/', function () {
     return redirect()->route('auth.login');
