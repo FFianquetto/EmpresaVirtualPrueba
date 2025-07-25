@@ -18,7 +18,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm border-bottom">
             <div class="container">
                 <a class="navbar-brand fw-bold" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    Empresa Virtual
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -33,51 +33,44 @@
                     <ul class="navbar-nav me-auto">
                     @if (!request()->is('registros') && !request()->is('registros/*'))
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('publicaciones.index') }}">Publicaciones</a>
+                            <a class="nav-link" href="{{ route('publicaciones.index') }}">Servicios</a>
                         </li>
+                        
+                        @if(session('usuario_logueado'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('comentarios.index') }}">Mensajes</a>
+                            </li>
+                        @endif
+                    @endif
+                </ul>
+
+                <ul class="navbar-nav ms-auto">
+                    @if(session('usuario_logueado'))
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-user"></i> {{ session('usuario_registrado') }}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ route('auth.dashboard') }}">Mi Panel</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{{ route('auth.logout') }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="fa fa-sign-out"></i> Cerrar Sesión
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('comentarios.index') }}">Comentarios</a>
+                            <a class="nav-link" href="{{ route('auth.login') }}">
+                                <i class="fa fa-sign-in"></i> Iniciar Sesión
+                            </a>
                         </li>
                     @endif
                 </ul>
- 
-
-                    <ul class="navbar-nav ms-auto">
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">Iniciar sesión</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">Registrarse</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle"
-                                   href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false">
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                document.getElementById('logout-form').submit();">
-                                        Cerrar sesión
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}"
-                                          method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
                 </div>
             </div>
         </nav>
