@@ -32,8 +32,7 @@ Route::post('/publicaciones', [PublicacioneController::class, 'store'])->name('p
 Route::get('/publicaciones/{id}/edit', [PublicacioneController::class, 'edit'])->name('publicaciones.edit');
 Route::put('/publicaciones/{id}', [PublicacioneController::class, 'update'])->name('publicaciones.update');
 
-Route::delete('/publicaciones/{id}', [PublicacioneController::class, 'destroy'])->name('publicaciones.destroy');
-
 Route::get('/publicaciones/{id}', [PublicacioneController::class, 'show'])->name('publicaciones.show');
+Route::delete('/publicaciones/{id}', [PublicacioneController::class, 'destroy'])->name('publicaciones.destroy');
 
 Route::get('/conversacion/{usuario1}/{usuario2}', [ComentarioController::class, 'conversacion'])->name('comentarios.conversacion');
