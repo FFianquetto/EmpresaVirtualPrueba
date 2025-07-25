@@ -11,73 +11,16 @@ use Illuminate\View\View;
 
 class RegistroController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request): View
-    {
-        $registros = Registro::paginate();
-
-        return view('registro.index', compact('registros'))
-            ->with('i', ($request->input('page', 1) - 1) * $registros->perPage());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): View
     {
         $registro = new Registro();
-
         return view('registro.create', compact('registro'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(RegistroRequest $request): RedirectResponse
     {
         $registro = Registro::create($request->validated());
-
-        return Redirect::route('publicaciones.index')
-            ->with('usuario_registrado', $registro->nombre)
-            ->with('registro_id', $registro->id);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show($id): View
-    {
-        $registro = Registro::find($id);
-
-        return view('registro.show', compact('registro'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id): View
-    {
-        $registro = Registro::find($id);
-
-        return view('registro.edit', compact('registro'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(RegistroRequest $request, Registro $registro): RedirectResponse
-    {
-        $registro->update($request->validated());
-
-        return Redirect::route('registros.index');
-    }
-
-    public function destroy($id): RedirectResponse
-    {
-        Registro::find($id)->delete();
-
-        return Redirect::route('registros.index');
+        return Redirect::route('auth.login')
+            ->with('success', '¡Registro exitoso! Ahora puedes iniciar sesión con tu correo y contraseña.');
     }
 }

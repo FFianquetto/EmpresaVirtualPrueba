@@ -11,83 +11,93 @@ use Illuminate\View\View;
 
 class PublicacioneController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request): View
     {
         $publicaciones = Publicacione::with('autor')->paginate();
-        
-        // Obtener el nombre del usuario registrado desde la sesión
         $usuarioRegistrado = session('usuario_registrado');
         $registroId = session('registro_id');
-
+        
         return view('publicacione.index', compact('publicaciones', 'usuarioRegistrado', 'registroId'))
             ->with('i', ($request->input('page', 1) - 1) * $publicaciones->perPage());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): View
     {
         $publicacione = new Publicacione();
         $registroId = session('registro_id');
-
         return view('publicacione.create', compact('publicacione', 'registroId'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(PublicacioneRequest $request): RedirectResponse
     {
         $data = $request->validated();
         
-        // Si no se proporciona registro_id, usar el de la sesión
-        if (!isset($data['registro_id'])) {
-            $data['registro_id'] = session('registro_id');
+        if (!isset($data['registro_id']) || empty($data['registro_id'])) {
+            $registroId = session('registro_id');
+            
+            if (!$registroId) {
+                $primerRegistro = \App\Models\Registro::first();
+                if ($primerRegistro) {
+                    $data['registro_id'] = $primerRegistro->id;
+                } else {
+                    return Redirect::route('registros.create')
+                        ->with('error', 'Debes registrarte primero para crear publicaciones.');
+                }
+            } else {
+                $data['registro_id'] = $registroId;
+            }
         }
         
         Publicacione::create($data);
-
         return Redirect::route('publicaciones.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id): View
     {
         $publicacione = Publicacione::find($id);
-
         return view('publicacione.show', compact('publicacione'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id): View
     {
         $publicacione = Publicacione::find($id);
-
-        return view('publicacione.edit', compact('publicacione'));
+        $registroId = session('registro_id');
+        
+        if (!$registroId || $publicacione->registro_id != $registroId) {
+            return Redirect::route('publicaciones.index')
+                ->with('error', 'No tienes permisos para editar esta publicación.');
+        }
+        
+        return view('publicacione.edit', compact('publicacione', 'registroId'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(PublicacioneRequest $request, Publicacione $publicacione): RedirectResponse
+    public function update(PublicacioneRequest $request, $id): RedirectResponse
     {
+        $publicacione = Publicacione::find($id);
+        $registroId = session('registro_id');
+        
+        if (!$registroId || $publicacione->registro_id != $registroId) {
+            return Redirect::route('publicaciones.index')
+                ->with('error', 'No tienes permisos para actualizar esta publicación.');
+        }
+        
         $publicacione->update($request->validated());
-
-        return Redirect::route('publicaciones.index');
+        return Redirect::route('publicaciones.index')
+            ->with('success', 'Publicación actualizada correctamente.');
     }
 
     public function destroy($id): RedirectResponse
     {
-        Publicacione::find($id)->delete();
-
-        return Redirect::route('publicaciones.index');
+        $publicacione = Publicacione::find($id);
+        $registroId = session('registro_id');
+        
+        if (!$registroId || $publicacione->registro_id != $registroId) {
+            return Redirect::route('publicaciones.index')
+                ->with('error', 'No tienes permisos para eliminar esta publicación.');
+        }
+        
+        $publicacione->delete();
+        return Redirect::route('publicaciones.index')
+            ->with('success', 'Publicación eliminada correctamente.');
     }
 }

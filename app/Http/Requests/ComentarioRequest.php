@@ -6,26 +6,23 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ComentarioRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-			'registro_id_emisor' => 'required',
-			'registro_id_receptor' => 'required',
-			'mensaje' => 'required|string',
-			'link' => 'required|string',
+            'mensaje' => 'required|string|max:1000',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'mensaje.required' => 'El mensaje es obligatorio.',
+            'mensaje.max' => 'El mensaje no puede tener más de 1000 caracteres.',
         ];
     }
 }
