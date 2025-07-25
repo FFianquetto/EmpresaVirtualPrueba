@@ -19,9 +19,6 @@
                                 <a href="{{ route('comentarios.index') }}" class="btn btn-secondary btn-sm">
                                     <i class="fa fa-arrow-left"></i> Volver
                                 </a>
-                                <a href="{{ route('comentarios.create', ['emisor_id' => $usuarioActual, 'receptor_id' => $otroUsuarioData->id]) }}" class="btn btn-primary btn-sm">
-                                    <i class="fa fa-reply"></i> Nuevo Mensaje
-                                </a>
                             </div>
                         </div>
                     </div>

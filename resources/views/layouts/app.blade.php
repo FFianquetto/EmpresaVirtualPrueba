@@ -45,6 +45,7 @@
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
+                    
                     @if(session('usuario_logueado'))
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -79,5 +80,8 @@
             @yield('content')
         </main>
     </div>
+    
 </body>
+
+
 </html>

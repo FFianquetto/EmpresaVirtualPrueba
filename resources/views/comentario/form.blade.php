@@ -32,8 +32,7 @@
         <div class="form-group mb-2 mb20">
             <label for="mensaje" class="form-label">Mensaje</label>
             <textarea name="mensaje" class="form-control @error('mensaje') is-invalid @enderror" 
-                      id="mensaje" rows="4" 
-                      placeholder="@if(isset($receptor))Escribe tu mensaje para {{ $receptor->nombre }}...@elseEscribe tu mensaje...@endif">{{ old('mensaje', $comentario?->mensaje) }}</textarea>
+                      id="mensaje" rows="4">{{ old('mensaje', $comentario?->mensaje) }}</textarea>
             {!! $errors->first('mensaje', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
 

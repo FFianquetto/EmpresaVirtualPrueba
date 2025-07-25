@@ -18,10 +18,33 @@
                             <strong>Servicio:</strong>
                             {{ $publicacione->titulo }}
                         </div>
+
+                        @if($publicacione->imagen)
+                            <div class="form-group mb-2 mb20">
+
+                                <div class="mt-2">
+                                    <img src="{{ $publicacione->imagen_url }}" alt="Imagen del servicio" class="img-fluid rounded" style="max-width: 400px;">
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="form-group mb-2 mb20">
                             <strong>Descripción:</strong>
                             {{ $publicacione->contenido }}
                         </div>
+
+                        @if($publicacione->audio)
+                            <div class="form-group mb-2 mb20">
+                                <strong>Audio:</strong>
+                                <div class="mt-2">
+                                    <audio controls style="max-width: 100%;">
+                                        <source src="{{ $publicacione->audio_url }}" type="audio/mpeg">
+                                        El navegador no soporta audio.
+                                    </audio>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="form-group mb-2 mb20">
                             <strong>Publicado por:</strong>
                             {{ $publicacione->autor->nombre ?? 'Sin autor' }}

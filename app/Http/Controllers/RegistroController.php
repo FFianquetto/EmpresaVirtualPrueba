@@ -20,6 +20,7 @@ class RegistroController extends Controller
     public function store(RegistroRequest $request): RedirectResponse
     {
         $registro = Registro::create($request->validated());
+        
         return Redirect::route('auth.login')
             ->with('success', '¡Registro exitoso! Ahora puedes iniciar sesión con tu correo y contraseña.');
     }

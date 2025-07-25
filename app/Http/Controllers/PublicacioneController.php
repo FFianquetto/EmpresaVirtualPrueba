@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\PublicacioneRequest;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PublicacioneController extends Controller
@@ -32,9 +33,11 @@ class PublicacioneController extends Controller
     {
         $data = $request->validated();
         
+
         if (!isset($data['registro_id']) || empty($data['registro_id'])) {
             $registroId = session('registro_id');
             
+
             if (!$registroId) {
                 $primerRegistro = \App\Models\Registro::first();
                 if ($primerRegistro) {
@@ -47,9 +50,25 @@ class PublicacioneController extends Controller
                 $data['registro_id'] = $registroId;
             }
         }
+
+
+        if ($request->hasFile('imagen')) {
+            $imagenPath = $request->file('imagen')->store('publicaciones/imagenes', 'public');
+            $data['imagen'] = $imagenPath;
+        }
+
+
+        if ($request->hasFile('audio')) {
+            $audioPath = $request->file('audio')->store('publicaciones/audios', 'public');
+            $data['audio'] = $audioPath;
+        }
         
+
         Publicacione::create($data);
-        return Redirect::route('publicaciones.index');
+        
+
+        return Redirect::route('publicaciones.index')
+            ->with('success', 'Publicación creada correctamente.');
     }
 
     public function show($id): View
@@ -76,12 +95,37 @@ class PublicacioneController extends Controller
         $publicacione = Publicacione::find($id);
         $registroId = session('registro_id');
         
+
         if (!$registroId || $publicacione->registro_id != $registroId) {
             return Redirect::route('publicaciones.index')
                 ->with('error', 'No tienes permisos para actualizar esta publicación.');
         }
         
-        $publicacione->update($request->validated());
+
+        $data = $request->validated();
+
+
+        if ($request->hasFile('imagen')) {
+            if ($publicacione->imagen && Storage::disk('public')->exists($publicacione->imagen)) {
+                Storage::disk('public')->delete($publicacione->imagen);
+            }
+            $imagenPath = $request->file('imagen')->store('publicaciones/imagenes', 'public');
+            $data['imagen'] = $imagenPath;
+        }
+
+
+        if ($request->hasFile('audio')) {
+            if ($publicacione->audio && Storage::disk('public')->exists($publicacione->audio)) {
+                Storage::disk('public')->delete($publicacione->audio);
+            }
+            $audioPath = $request->file('audio')->store('publicaciones/audios', 'public');
+            $data['audio'] = $audioPath;
+        }
+        
+
+        $publicacione->update($data);
+        
+
         return Redirect::route('publicaciones.index')
             ->with('success', 'Publicación actualizada correctamente.');
     }
@@ -95,8 +139,17 @@ class PublicacioneController extends Controller
             return Redirect::route('publicaciones.index')
                 ->with('error', 'No tienes permisos para eliminar esta publicación.');
         }
+
+        if ($publicacione->imagen && Storage::disk('public')->exists($publicacione->imagen)) {
+            Storage::disk('public')->delete($publicacione->imagen);
+        }
+        
+        if ($publicacione->audio && Storage::disk('public')->exists($publicacione->audio)) {
+            Storage::disk('public')->delete($publicacione->audio);
+        }
         
         $publicacione->delete();
+        
         return Redirect::route('publicaciones.index')
             ->with('success', 'Publicación eliminada correctamente.');
     }

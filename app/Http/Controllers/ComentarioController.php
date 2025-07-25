@@ -15,20 +15,24 @@ class ComentarioController extends Controller
     {
         $usuarioId = session('registro_id');
         
+
         if (!$usuarioId) {
             return redirect()->route('auth.login')->with('error', 'Debes iniciar sesión para ver tus mensajes.');
         }
         
+
         $mensajesRecibidos = Comentario::where('registro_id_receptor', $usuarioId)
             ->with('emisor')
             ->orderBy('created_at', 'desc')
             ->get();
             
+
         $mensajesEnviados = Comentario::where('registro_id_emisor', $usuarioId)
             ->with('receptor')
             ->orderBy('created_at', 'desc')
             ->get();
             
+
         return view('comentario.index', compact('mensajesRecibidos', 'mensajesEnviados'))
             ->with('i', ($request->input('page', 1) - 1) * 20);
     }
@@ -46,12 +50,15 @@ class ComentarioController extends Controller
         $emisor = null;
         $receptor = null;
         $publicacion = null;
+        
         if ($emisorId) {
             $emisor = \App\Models\Registro::find($emisorId);
         }
+        
         if ($receptorId) {
             $receptor = \App\Models\Registro::find($receptorId);
         }
+        
         if ($publicacionId) {
             $publicacion = \App\Models\Publicacione::find($publicacionId);
         }
@@ -63,25 +70,41 @@ class ComentarioController extends Controller
         $data = $request->validated();
         $emisorId = $request->input('emisor_id');
         $receptorId = $request->input('receptor_id');
+        
+
         if ($emisorId) {
             $data['registro_id_emisor'] = $emisorId;
         }
+        
+
         if ($receptorId) {
             $data['registro_id_receptor'] = $receptorId;
         }
+
+
         if (!isset($data['registro_id_emisor'])) {
             $data['registro_id_emisor'] = session('registro_id');
         }
+
+
         if (!isset($data['registro_id_receptor'])) {
             return back()->withErrors(['mensaje' => 'Debes seleccionar un destinatario.']);
         }
+
+
         if ($data['registro_id_emisor'] == $data['registro_id_receptor']) {
             return back()->withErrors(['mensaje' => 'No puedes enviar mensajes a ti mismo.']);
         }
+
+
         if (!session('usuario_logueado')) {
             return back()->withErrors(['mensaje' => 'Debes iniciar sesión para enviar mensajes.']);
         }
+
+
         Comentario::create($data);
+
+
         return Redirect::route('comentarios.conversacion', [$data['registro_id_emisor'], $data['registro_id_receptor']])
             ->with('success', 'Mensaje enviado correctamente.');
     }

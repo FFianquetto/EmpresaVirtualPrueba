@@ -10,9 +10,13 @@
             <div class="col-md-12">
                 <div class="card card-default">
                     <div class="card-header">
-                        <span class="card-title">Detalles del Mensaje</span>
-                        <div class="float-right">
-                            <a class="btn btn-primary" href="{{ route('comentarios.index') }}"> Volver</a>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="card-title">Detalles del Mensaje</span>
+                            <div class="float-right">
+                                <a class="btn btn-primary btn-sm" href="{{ route('comentarios.index') }}">
+                                    <i class="fa fa-arrow-left"></i> Volver
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body bg-white">
@@ -47,8 +51,6 @@
                                 <a href="{{ route('comentarios.create', ['emisor_id' => session('registro_id'), 'receptor_id' => $comentario->emisor->id]) }}" class="btn btn-primary">
                                     <i class="fa fa-reply"></i> Contestar a {{ $comentario->emisor->nombre }}
                                 </a>
-                            @elseif($esEmisor)
-                                <span class="text-muted">Este es tu mensaje enviado</span>
                             @endif
                         </div>
 

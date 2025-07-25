@@ -14,11 +14,6 @@
                             <span id="card_title">
                                 {{ __('Mis Mensajes') }}
                             </span>
-                            <div class="float-right">
-                                <a href="{{ route('comentarios.create') }}" class="btn btn-primary btn-sm float-right" data-placement="left">
-                                  {{ __('Nuevo Mensaje') }}
-                                </a>
-                            </div>
                         </div>
                     </div>
                     @if(session('success'))

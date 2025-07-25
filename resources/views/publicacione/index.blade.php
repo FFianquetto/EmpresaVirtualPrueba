@@ -31,6 +31,12 @@
                         </div>
                     @endif
 
+                    @if(session('success'))
+                        <div class="alert alert-success m-4">
+                            <i class="fa fa-check-circle"></i> {{ session('success') }}
+                        </div>
+                    @endif
+
                     @if ($usuarioRegistrado)
                         <div class="alert alert-info m-4">
                             <p><strong>¡Bienvenido {{ $usuarioRegistrado }}!</strong> Publica aquí!</p>
@@ -42,6 +48,7 @@
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
                                     <tr>
+                                        <th>Imagen</th>
                                         <th>Servicio</th>
                                         <th>Descripción</th>
                                         <th>Publicado por</th>
@@ -57,8 +64,24 @@
                                         @endphp
                                         
                                         <tr>
+                                            <td>
+                                                @if($publicacione->imagen)
+                                                    <img src="{{ $publicacione->imagen_url }}" alt="Imagen del servicio" class="img-thumbnail" style="max-width: 60px; max-height: 60px;">
+                                                @else
+                                                    <div class="bg-light text-muted d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 12px;">
+                                                        Sin imagen
+                                                    </div>
+                                                @endif
+                                                @if($publicacione->audio)
+                                                    <div class="mt-1">
+                                                        <i class="fa fa-volume-up text-info" title="Tiene audio"></i>
+                                                    </div>
+                                                @endif
+                                            </td>
                                             <td>{{ $publicacione->titulo }}</td>
+                                            
                                             <td>{{ Str::limit($publicacione->contenido, 50) }}</td>
+                                            
                                             <td>{{ $publicacione->autor->nombre ?? 'Sin autor' }}</td>
                                             <td>
                                                 @if($publicacione->autor && !$esPropiaPublicacion)
@@ -99,6 +122,7 @@
                         </div>
                     </div>
                 </div>
+                
                 {!! $publicaciones->withQueryString()->links() !!}
             </div>
         </div>

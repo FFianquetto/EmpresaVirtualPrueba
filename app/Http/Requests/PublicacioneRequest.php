@@ -16,15 +16,23 @@ class PublicacioneRequest extends FormRequest
         return [
             'titulo' => 'required|string|max:255',
             'contenido' => 'required|string',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'audio' => 'nullable|file|mimes:mp3,wav,ogg,m4a|max:10240',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'titulo.required' => 'El título es obligatorio.',
+            'titulo.required' => 'Título obligatorio',
             'titulo.max' => 'El título no puede tener más de 255 caracteres.',
-            'contenido.required' => 'La descripción es obligatoria.',
+            'contenido.required' => 'Descripción obligatoria',
+            'imagen.image' => 'El archivo debe ser una imagen.',
+            'imagen.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg',
+            'imagen.max' => 'La imagen no puede ser mayor a 2MB.',
+            'audio.file' => 'El archivo debe ser un archivo de audio.',
+            'audio.mimes' => 'El audio debe ser de tipo: mp3, wav, ogg',
+            'audio.max' => 'El audio no puede ser mayor a 10MB.',
         ];
     }
 }

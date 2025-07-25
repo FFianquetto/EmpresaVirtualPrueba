@@ -6,3 +6,56 @@
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+
+body {
+  background-color: $body-bg;
+  font-family: $font-family-sans-serif;
+  color: $secondary;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $dark;
+  font-family: $font-family-sans-serif;
+}
+
+a {
+  color: $primary;
+  text-decoration: none;
+  
+  &:hover {
+    color: darken($primary, 10%);
+  }
+}
+
+.navbar {
+  background-color: $navbar-bg;
+}
+
+.btn-primary, .btn-warning {
+  background-color: $primary;
+  border-color: $primary;
+  color: $light;
+  
+  &:hover {
+    background-color: darken($primary, 10%);
+    border-color: darken($primary, 10%);
+  }
+}
+
+.table th:last-child,
+.table td:last-child {
+  min-width: 200px;
+  width: 200px;
+  white-space: nowrap;
+}
+
+.table td:last-child .btn {
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+  display: inline-block;
+}
+
+.table td:last-child form {
+  display: inline-block;
+  margin-right: 0.25rem;
+}
