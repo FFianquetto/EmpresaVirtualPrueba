@@ -28,17 +28,28 @@ a {
 }
 
 .navbar {
-  background-color: $navbar-bg;
+  background-color: $navbar-bg !important;
 }
 
-.btn-primary, .btn-warning {
-  background-color: $primary;
-  border-color: $primary;
-  color: $light;
+.btn-primary {
+  background-color: $primary !important;
+  border-color: $primary !important;
+  color: $light !important;
   
   &:hover {
-    background-color: darken($primary, 10%);
-    border-color: darken($primary, 10%);
+    background-color: darken($primary, 10%) !important;
+    border-color: darken($primary, 10%) !important;
+  }
+}
+
+.btn-warning {
+  background-color: $primary !important;
+  border-color: $primary !important;
+  color: $light !important;
+  
+  &:hover {
+    background-color: darken($primary, 10%) !important;
+    border-color: darken($primary, 10%) !important;
   }
 }
 
@@ -58,4 +69,27 @@ a {
 .table td:last-child form {
   display: inline-block;
   margin-right: 0.25rem;
+}
+
+.card {
+  border-color: $primary;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+  background-color: $navbar-bg;
+  border-bottom-color: $primary;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  color: $primary !important;
+}
+
+.nav-link {
+  color: $secondary !important;
+  
+  &:hover {
+    color: $primary !important;
+  }
 }
