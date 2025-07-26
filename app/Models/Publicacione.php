@@ -24,7 +24,7 @@ class Publicacione extends Model
     public function getImagenUrlAttribute()
     {
         if ($this->imagen) {
-            return asset('storage/' . $this->imagen);
+            return '/storage/' . $this->imagen;
         }
         return null;
     }
@@ -32,7 +32,7 @@ class Publicacione extends Model
     public function getAudioUrlAttribute()
     {
         if ($this->audio) {
-            return asset('storage/' . $this->audio);
+            return '/storage/' . $this->audio;
         }
         return null;
     }

@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('comentarios', function (Blueprint $table) {
-            $table->string('link')->nullable()->change();
+            $table->string('imagen')->nullable()->after('mensaje');
+            $table->string('audio')->nullable()->after('imagen');
         });
     }
 
@@ -22,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('comentarios', function (Blueprint $table) {
-            $table->string('link')->nullable(false)->change();
+            $table->dropColumn(['imagen', 'audio']);
         });
     }
 };

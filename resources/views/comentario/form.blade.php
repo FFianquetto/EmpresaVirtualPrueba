@@ -30,10 +30,26 @@
         @endif
 
         <div class="form-group mb-2 mb20">
-            <label for="mensaje" class="form-label">Mensaje</label>
+            <label for="mensaje" class="form-label">Mensaje (opcional)</label>
             <textarea name="mensaje" class="form-control @error('mensaje') is-invalid @enderror" 
-                      id="mensaje" rows="4">{{ old('mensaje', $comentario?->mensaje) }}</textarea>
+                      id="mensaje" rows="4" placeholder="Escribe tu mensaje aquí... (opcional)">{{ old('mensaje', $comentario?->mensaje) }}</textarea>
             {!! $errors->first('mensaje', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+        </div>
+
+        <div class="form-group mb-2 mb20">
+            <label for="imagen" class="form-label">Imagen (opcional)</label>
+            <input type="file" name="imagen" class="form-control @error('imagen') is-invalid @enderror" 
+                   id="imagen" accept="image/*">
+            <small class="form-text text-muted">Formatos permitidos: JPEG, PNG, JPG, GIF. Máximo 2MB.</small>
+            {!! $errors->first('imagen', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+        </div>
+
+        <div class="form-group mb-2 mb20">
+            <label for="audio" class="form-label">Audio (opcional)</label>
+            <input type="file" name="audio" class="form-control @error('audio') is-invalid @enderror" 
+                   id="audio" accept="audio/*">
+            <small class="form-text text-muted">Formatos permitidos: MP3, WAV, OGG. Máximo 10MB.</small>
+            {!! $errors->first('audio', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
 
     </div>

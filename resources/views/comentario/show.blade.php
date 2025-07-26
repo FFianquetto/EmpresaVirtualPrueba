@@ -32,9 +32,46 @@
                         <div class="form-group mb-2 mb20">
                             <strong>Mensaje:</strong>
                             <div class="alert alert-light border">
-                                {{ $comentario->mensaje }}
+                                @if(!empty($comentario->mensaje))
+                                    {{ $comentario->mensaje }}
+                                @else
+                                    <em class="text-muted">
+                                        @if($comentario->imagen && $comentario->audio)
+                                            Solo imagen y audio
+                                        @elseif($comentario->imagen)
+                                            Solo imagen
+                                        @elseif($comentario->audio)
+                                            Solo audio
+                                        @endif
+                                    </em>
+                                @endif
                             </div>
                         </div>
+                        
+                        @if($comentario->imagen)
+                            <div class="form-group mb-2 mb20">
+                                <strong>Imagen adjunta:</strong>
+                                <div class="mt-2">
+                                    <img src="{{ $comentario->imagen_url }}" alt="Imagen adjunta" 
+                                         class="img-fluid rounded" style="max-width: 300px; max-height: 300px;">
+                                </div>
+                            </div>
+                        @endif
+                        
+                        @if($comentario->audio)
+                            <div class="form-group mb-2 mb20">
+                                <strong>Audio adjunto:</strong>
+                                <div class="mt-2">
+                                    <audio controls style="max-width: 100%;">
+                                        <source src="{{ $comentario->audio_url }}" type="audio/mpeg">
+                                        <source src="{{ $comentario->audio_url }}" type="audio/wav">
+                                        <source src="{{ $comentario->audio_url }}" type="audio/ogg">
+                                        Tu navegador no soporta el elemento de audio.
+                                    </audio>
+                                </div>
+                            </div>
+                        @endif
+                        
                         <div class="form-group mb-2 mb20">
                             <strong>Fecha de envío:</strong>
                             {{ $comentario->created_at->format('d/m/Y H:i') }}

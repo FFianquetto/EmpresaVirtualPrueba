@@ -68,7 +68,7 @@ class PublicacioneController extends Controller
         
 
         return Redirect::route('publicaciones.index')
-            ->with('success', 'Publicación creada correctamente.');
+            ->with('success', 'Publicación creada.');
     }
 
     public function show($id): View
@@ -127,7 +127,7 @@ class PublicacioneController extends Controller
         
 
         return Redirect::route('publicaciones.index')
-            ->with('success', 'Publicación actualizada correctamente.');
+            ->with('success', 'Publicación actualizada.');
     }
 
     public function destroy($id): RedirectResponse
@@ -151,6 +151,6 @@ class PublicacioneController extends Controller
         $publicacione->delete();
         
         return Redirect::route('publicaciones.index')
-            ->with('success', 'Publicación eliminada correctamente.');
+            ->with('success', 'Publicación borrada.');
     }
 }

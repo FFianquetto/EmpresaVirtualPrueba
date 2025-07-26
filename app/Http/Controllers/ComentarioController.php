@@ -17,23 +17,11 @@ class ComentarioController extends Controller
         
 
         if (!$usuarioId) {
-            return redirect()->route('auth.login')->with('error', 'Debes iniciar sesión para ver tus mensajes.');
+            return redirect()->route('auth.login')->with('error', 'Debes iniciar sesión para ver tus conversaciones.');
         }
         
 
-        $mensajesRecibidos = Comentario::where('registro_id_receptor', $usuarioId)
-            ->with('emisor')
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-
-        $mensajesEnviados = Comentario::where('registro_id_emisor', $usuarioId)
-            ->with('receptor')
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-
-        return view('comentario.index', compact('mensajesRecibidos', 'mensajesEnviados'))
+        return view('comentario.index')
             ->with('i', ($request->input('page', 1) - 1) * 20);
     }
 
@@ -101,12 +89,33 @@ class ComentarioController extends Controller
             return back()->withErrors(['mensaje' => 'Debes iniciar sesión para enviar mensajes.']);
         }
 
+        $mensaje = trim($request->input('mensaje', ''));
+        $imagen = $request->file('imagen');
+        $audio = $request->file('audio');
+        
+        if (empty($mensaje) && !$imagen && !$audio) {
+            return back()->withErrors(['mensaje' => 'Debes enviar al menos un mensaje, imagen o audio.']);
+        }
+
+        if (empty($mensaje)) {
+            $data['mensaje'] = null;
+        }
+
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+            $imagenPath = $imagen->store('comentarios/imagenes', 'public');
+            $data['imagen'] = $imagenPath;
+        }
+
+        if ($request->hasFile('audio')) {
+            $audio = $request->file('audio');
+            $audioPath = $audio->store('comentarios/audios', 'public');
+            $data['audio'] = $audioPath;
+        }
 
         Comentario::create($data);
 
-
-        return Redirect::route('comentarios.conversacion', [$data['registro_id_emisor'], $data['registro_id_receptor']])
-            ->with('success', 'Mensaje enviado correctamente.');
+        return Redirect::route('comentarios.conversacion', [$data['registro_id_emisor'], $data['registro_id_receptor']]);
     }
 
     public function show($id): View

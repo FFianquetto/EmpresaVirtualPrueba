@@ -21,7 +21,7 @@
 
         <div class="form-group mb-2 mb20">
             <label for="edad" class="form-label">{{ __('Edad') }}</label>
-            <input type="number" name="edad" class="form-control @error('edad') is-invalid @enderror" value="{{ old('edad', $registro?->edad) }}" id="edad" placeholder="Edad" min="1" max="120">
+            <input type="number" name="edad" class="form-control @error('edad') is-invalid @enderror" value="{{ old('edad', $registro?->edad) }}" id="edad" placeholder="Edad" min="1" max="111">
             {!! $errors->first('edad', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
 

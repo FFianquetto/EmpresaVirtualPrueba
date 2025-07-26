@@ -29,58 +29,136 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">{{ __('Mensajes Recibidos') }} ({{ $mensajesRecibidos->count() }})</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="card-title">{{ __(' Chats recientes') }}</span>
+                    </div>
                 </div>
-                <div class="card-body">
-                    @if($mensajesRecibidos->count() > 0)
-                        <div class="list-group">
-                            @foreach($mensajesRecibidos as $mensaje)
-                                <div class="list-group-item">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1">{{ $mensaje->emisor->nombre }}</h6>
-                                        <small>{{ $mensaje->created_at->format('d/m/Y H:i') }}</small>
+                <div class="card-body p-0">
+                    @php
+                        $usuarioId = session('registro_id');
+                        
+                        $conversaciones = \App\Models\Comentario::where(function($query) use ($usuarioId) {
+                            $query->where('registro_id_emisor', $usuarioId)
+                                  ->orWhere('registro_id_receptor', $usuarioId);
+                        })
+                        ->with(['emisor', 'receptor'])
+                        ->orderBy('created_at', 'desc')
+                        ->get()
+                        ->groupBy(function($mensaje) use ($usuarioId) {
+                            if ($mensaje->registro_id_emisor == $usuarioId) {
+                                return $mensaje->registro_id_receptor;
+                            } else {
+                                return $mensaje->registro_id_emisor;
+                            }
+                        })
+                        ->map(function($mensajes) {
+                            return $mensajes->first();
+                        })
+                        ->sortByDesc('created_at')
+                        ->take(3);
+                    @endphp
+
+                    @if($conversaciones->count() > 0)
+                        <div class="list-group list-group-flush">
+                            @foreach($conversaciones as $ultimoMensaje)
+                                @php
+                                    $otroUsuario = $ultimoMensaje->registro_id_emisor == $usuarioId 
+                                        ? $ultimoMensaje->receptor 
+                                        : $ultimoMensaje->emisor;
+                                @endphp
+                                
+                                <div class="list-group-item list-group-item-action p-3" style="border: none; border-bottom: 1px solid #dee2e6;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0 me-3">
+                                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <i class="fa fa-user text-white" style="font-size: 0.9rem;"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">{{ $otroUsuario->nombre }}</h6>
+                                                    <p class="mb-1 text-muted small">
+                                                        @if(!empty($ultimoMensaje->mensaje))
+                                                            @if($ultimoMensaje->registro_id_emisor == $usuarioId)
+                                                                - {{ Str::limit($ultimoMensaje->mensaje, 30) }}
+                                                            @else
+                                                                {{ Str::limit($ultimoMensaje->mensaje, 30) }}
+                                                            @endif
+                                                        @else
+                                                            <em class="text-muted">
+                                                                @if($ultimoMensaje->imagen && $ultimoMensaje->audio)
+                                                                    <i class="fa fa-image me-1"></i><i class="fa fa-music me-1"></i>Imagen y audio
+                                                                @elseif($ultimoMensaje->imagen)
+                                                                    <i class="fa fa-image me-1"></i>Imagen
+                                                                @elseif($ultimoMensaje->audio)
+                                                                    <i class="fa fa-music me-1"></i>Audio
+                                                                @endif
+                                                            </em>
+                                                        @endif
+                                                    </p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <small class="text-muted d-block">
+                                                        {{ $ultimoMensaje->created_at->diffForHumans() }}
+                                                    </small>
+                                                    @if($ultimoMensaje->imagen || $ultimoMensaje->audio)
+                                                        <div class="mt-1">
+                                                            @if($ultimoMensaje->imagen)
+                                                                <span class="badge bg-info me-1" style="font-size: 0.5rem;">
+                                                                    <i class="fa fa-image"></i>
+                                                                </span>
+                                                            @endif
+                                                            @if($ultimoMensaje->audio)
+                                                                <span class="badge bg-warning me-1" style="font-size: 0.5rem;">
+                                                                    <i class="fa fa-music"></i>
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <p class="mb-1">{{ $mensaje->mensaje }}</p>
-                                    @if($mensaje->link)
-                                        <small><a href="{{ $mensaje->link }}" target="_blank">Link adjunto</a></small>
-                                    @endif
+                                    <div class="mt-2">
+                                        <a href="{{ route('comentarios.conversacion', [$usuarioId, $otroUsuario->id]) }}" 
+                                           class="btn btn-outline-primary btn-sm w-100" style="font-size: 0.8rem;">
+                                            <i class="fa fa-comments"></i> Abrir Chat
+                                        </a>
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
+
                     @else
-                        <p class="text-muted">No tienes mensajes recibidos.</p>
+                        <div class="text-center py-4">
+                            <div class="mb-2">
+                                <i class="fa fa-comments fa-2x text-muted"></i>
+                            </div>
+                            <p class="text-muted mb-2" style="font-size: 0.9rem;">No tienes conversaciones</p>
+                        </div>
                     @endif
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">{{ __('Mensajes Enviados') }} ({{ $mensajesEnviados->count() }})</span>
+                    <span class="card-title">{{ __('Acciones Rápidas') }}</span>
                 </div>
                 <div class="card-body">
-                    @if($mensajesEnviados->count() > 0)
-                        <div class="list-group">
-                            @foreach($mensajesEnviados as $mensaje)
-                                <div class="list-group-item">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1">Para: {{ $mensaje->receptor->nombre }}</h6>
-                                        <small>{{ $mensaje->created_at->format('d/m/Y H:i') }}</small>
-                                    </div>
-                                    <p class="mb-1">{{ $mensaje->mensaje }}</p>
-                                    @if($mensaje->link)
-                                        <small><a href="{{ $mensaje->link }}" target="_blank">Link adjunto</a></small>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <p class="text-muted">No has enviado mensajes.</p>
-                    @endif
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('comentarios.index') }}" class="btn btn-outline-primary">
+                            <i class="fa fa-comments"></i> Ver todos los Chats
+                        </a>
+                        <a href="{{ route('publicaciones.create') }}" class="btn btn-success">
+                            <i class="fa fa-plus"></i> Nueva Publicación
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -92,9 +170,7 @@
                 <div class="card-header">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span class="card-title">{{ __('Mis Publicaciones') }} ({{ $publicacionesUsuario->count() }})</span>
-                        <a href="{{ route('publicaciones.create') }}" class="btn btn-success btn-sm">
-                            <i class="fa fa-plus"></i> {{ __('Nueva Publicación') }}
-                        </a>
+                       
                     </div>
                 </div>
                 <div class="card-body">
@@ -137,10 +213,7 @@
                         </div>
                     @else
                         <div class="text-center py-4">
-                            <p class="text-muted mb-3">No tienes publicaciones aún.</p>
-                            <a href="{{ route('publicaciones.create') }}" class="btn btn-primary">
-                                <i class="fa fa-plus"></i> {{ __('Crear tu primera publicación') }}
-                            </a>
+                            <p class="text-muted mb-3">Sin publicaciones</p>
                         </div>
                     @endif
                 </div>

@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('registro_id_emisor')->constrained('registros')->onDelete('cascade');
             $table->foreignId('registro_id_receptor')->constrained('registros')->onDelete('cascade');
-            $table->text('mensaje');
-            $table->string('link')->nullable();
+            $table->text('mensaje')->nullable();
             $table->timestamps(); 
         }); 
     }

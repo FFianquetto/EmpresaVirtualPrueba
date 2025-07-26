@@ -64,23 +64,11 @@ class AutenticacionController extends Controller
         $usuario = Registro::find($usuarioId);
         
 
-        $mensajesRecibidos = \App\Models\Comentario::where('registro_id_receptor', $usuarioId)
-            ->with('emisor')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-
-        $mensajesEnviados = \App\Models\Comentario::where('registro_id_emisor', $usuarioId)
-            ->with('receptor')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-
         $publicacionesUsuario = \App\Models\Publicacione::where('registro_id', $usuarioId)
             ->orderBy('created_at', 'desc')
             ->get();
 
 
-        return view('auth.dashboard', compact('usuario', 'mensajesRecibidos', 'mensajesEnviados', 'publicacionesUsuario'));
+        return view('auth.dashboard', compact('usuario', 'publicacionesUsuario'));
     }
 }
