@@ -6,7 +6,7 @@ use App\Http\Controllers\PublicacioneController;
 use App\Http\Controllers\AutenticacionController;
 
 //FFianquetto V.14
-
+//Actualizado V.17
 Route::get('/', function () {
     return redirect()->route('auth.login');
 });
